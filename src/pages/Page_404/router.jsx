@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import LazyWrapper from '../../compoments/LazyLoad';
+import LazyWrapper from '@components/LazyLoad';
 const Page404 = lazy(() => import('./index'));
 
 const RouterPage404 = {

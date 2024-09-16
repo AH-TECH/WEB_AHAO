@@ -1,0 +1,6 @@
+.flex-navbar-main {
+  @apply flex justify-start;
+}
+.nth-setWidth {
+  @apply w-full;
+}
