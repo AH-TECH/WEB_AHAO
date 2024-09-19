@@ -18,7 +18,7 @@ export default class Socket {
         this.socket.close();
     }
 
-    sendMessage = () => {
+    sendMessage = (message) => {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.socket.send(message);
         } 
