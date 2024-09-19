@@ -20,7 +20,7 @@ export const Component1 = ({ mode, setMode }) => {
   const handleManual = () => {
     setMode("MANUAL");
     if (socketAuto.current) {
-      socketAuto.current.sendMessage("Auto disconnect");
+      socketAuto.current.sendMessage(0);
     }
   };
 
