@@ -3,7 +3,6 @@ export default class Socket {
     // init properties
     constructor(){
         this.socket = null
-        this.message = undefined
     }
 
     connectWebSocket = (url) => {
@@ -24,10 +23,12 @@ export default class Socket {
         } 
     }
 
-    getMessage = () => {
-        this.socket.onmessage = (event) => {
-            this.message = event.data
-            console.log(this.message)
+    getMessage = (callback) => {
+        if (this.socket) {
+            this.socket.onmessage = (event) => {
+                const data = event.data;
+                callback(data);
+            }
         }
     }
 }

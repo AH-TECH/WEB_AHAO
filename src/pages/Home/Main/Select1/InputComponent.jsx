@@ -1,45 +1,62 @@
 import React, { useState, useRef, useEffect } from "react";
 import Socket from "../../../../ws";
+import ROUTES from "../../../../ws/routers/index"
 
 export const InputComponent = () => {
   const [getText, setText] = useState("");
-  const socketAuto = useRef(null); // Dùng useRef để giữ đối tượng WebSocket
+  const [data, setData] = useState(null);
+  const socketInput = useRef(null);
 
   useEffect(() => {
-    // Khởi tạo WebSocket chỉ một lần khi component mount
-    if (!socketAuto.current) {
-      socketAuto.current = new Socket();
-      socketAuto.current.connectWebSocket("ws://localhost:5000/PLC1/SearchIP");
+    if (!socketInput.current) {
+      socketInput.current = new Socket();
+      socketInput.current.connectWebSocket(ROUTES.SEARCH_IP);
     }
 
-    // Ngắt kết nối WebSocket khi component unmount
+    socketInput.current.getMessage((receivedData) => {
+      setData(JSON.parse(receivedData));
+    });
+
     return () => {
-      if (socketAuto.current) {
-        socketAuto.current.disconnectWebSocket();
+      if (socketInput.current) {
+        socketInput.current.disconnectWebSocket();
       }
     };
   }, []);
 
   const handleChangeValue = (e) => {
-    setText(e.target.value); // Cập nhật giá trị input
+    setText(e.target.value);
   };
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
-      // Gửi tin nhắn qua WebSocket khi nhấn Enter
-      socketAuto.current.sendMessage(getText);
-      console.log(getText); // Log giá trị vừa nhập
+      socketInput.current.sendMessage(getText);
     }
   };
 
   return (
-    <input
-      type="text"
-      value={getText}
-      placeholder="Nhập IP máy..."
-      className="input input-bordered input-accent w-full max-w-xs"
-      onChange={handleChangeValue} // Cập nhật giá trị input khi người dùng gõ
-      onKeyDown={handleEnter} // Gửi tin nhắn khi nhấn Enter
-    />
+    <div className="flex flex-col space-y-2">
+      <input
+        id="ip-input"
+        type="text"
+        value={getText}
+        placeholder="Nhập IP máy..."
+        className="input input-bordered input-accent w-full max-w-xs"
+        onChange={handleChangeValue}
+        onKeyDown={handleEnter}
+      />
+
+      {data && (
+        <div
+          className={`text-sm font-medium p-2 rounded-md ${
+            data.Status === 1
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {data.Message}
+        </div>
+      )}
+    </div>
   );
 };

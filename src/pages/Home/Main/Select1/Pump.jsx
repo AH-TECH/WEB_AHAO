@@ -1,20 +1,54 @@
 import imgbump from "@assets/bump.png";
 import imgbumperr from "@assets/bumperr.png";
-export const Pump = ({ status, mode, setPump }) => {
-  const handlePump = (number, action) => {
-    let url;
-    let message;
-    let disConnectUrl;
+import { useRef, useEffect } from "react";
+import Socket from "../../../../ws";
+export const Pump = ({
+  index,
+  status,
+  mode,
+  setPump,
+  urlSocketPumpOn,
+  urlSocketPumpOff,
+}) => {
+  const socketPumpOn = useRef(null);
+  const socketPumpOff = useRef(null);
+
+  useEffect(() => {
+    if (!socketPumpOn.current) {
+      socketPumpOn.current = new Socket();
+      socketPumpOn.current.connectWebSocket(urlSocketPumpOn);
+    }
+
+    if (!socketPumpOff.current) {
+      socketPumpOff.current = new Socket();
+      socketPumpOff.current.connectWebSocket(urlSocketPumpOff);
+    }
+
+    return () => {
+      if (socketPumpOff.current) {
+        socketPumpOff.current.disconnectWebSocket();
+      }
+      if (socketPumpOn.current) {
+        socketPumpOn.current.disconnectWebSocket();
+      }
+    };
+  }, []);
+
+  const handlePump = (action) => {
     if (action === "on") {
       setPump(true);
-      url = "ws://localhost:5000/PLC1/Pump1/On";
-      disConnectUrl = "ws://localhost:5000/PLC1/Pump1/Off";
-      message = "1 on";
+      socketPumpOn.current.sendMessage(`pump ${index + 1} on`);
+
+      socketPumpOn.current.getMessage((receivedData) => {
+        console.log(receivedData);
+      });
     } else {
       setPump(false);
-      url = "ws://localhost:5000/PLC1/Pump1/Off";
-      disConnectUrl = "ws://localhost:5000/PLC1/Pump1/On";
-      message = "1 off";
+      socketPumpOff.current.sendMessage(`pump ${index + 1} off`);
+
+      socketPumpOff.current.getMessage((receivedData) => {
+        console.log(receivedData);
+      });
     }
   };
   return (
@@ -30,14 +64,14 @@ export const Pump = ({ status, mode, setPump }) => {
         <button
           className="btn btn-success"
           disabled={mode === "AUTO"}
-          onClick={() => handlePump(1, "on")}
+          onClick={() => handlePump("on")}
         >
           START
         </button>
         <button
           className="btn btn-error"
           disabled={mode === "AUTO"}
-          onClick={() => handlePump(1, "off")}
+          onClick={() => handlePump("off")}
         >
           STOP
         </button>
