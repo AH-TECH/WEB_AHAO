@@ -58,8 +58,8 @@ const index = () => {
   return (
     <div className="p-10 flex flex-col items-center space-y-8">
       <div className="w-[90%] flex justify-between items-center">
-        <Component1 mode={mode} setMode={setMode} />
         <InputComponent />
+        <Component1 mode={mode} setMode={setMode} />
         <Component2 activeButton={status} />
       </div>
       <div className="w-[90%] flex justify-between items-center h-[400px] gap-10">

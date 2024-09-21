@@ -55,7 +55,7 @@ export const Pump = ({
     <div className="flex flex-col items-center space-y-4 flex-1">
       <div className="w-60 h-60 border flex items-center justify-center object-cover">
         <img
-          src={status ? imgbumperr : imgbump}
+          src={status ? imgbump :imgbumperr}
           alt="Hinh bom 1"
           className="w-full "
         />
