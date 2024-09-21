@@ -6,7 +6,6 @@ import { Component3 } from "./Component3";
 import { Pump } from "./Pump";
 import { InputComponent } from "./InputComponent";
 import ROUTES from "../../../../ws/routers";
-
 const index = () => {
   const [mode, setMode] = useState("AUTO");
   const [pump1Status, setPump1Status] = useState(false);
